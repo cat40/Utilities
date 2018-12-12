@@ -1,8 +1,9 @@
 import re
 import sys
+import math
 
 # some constants
-point_pattern = re.compile(r'\(xy -?\d+\.?\d* -?\d+\.?\d*\)')
+point_pattern = re.compile(r'(\(xy -?\d+\.?\d* -?\d+\.?\d*\))')
 
 '''
 (xy ###.## ###.##)
@@ -39,19 +40,36 @@ def modify_point(point, multiplier):
     :param multiplier: float, value to multiply the point by
     :return: string, modified point
     '''
+    def format_number(n):
+        return format(math.floor(n * 10**6) / 10**6, '.6f')
+        # return format(round(n, 6), '.6f')
     modified_point = '(xy '
     point = point[4:]
     number1 = point.split(' ')[0]
-    modified_point += format(float(number1) * multiplier, '.6f')
+    modified_point += format_number(float(number1) * multiplier)
     number2 = point.split(' ')[1][:-1]
-    modified_point += ' ' + format(float(number2) * multiplier, '.6f') + ')'
+    modified_point += ' ' + format_number(float(number2) * multiplier) + ')'
     return modified_point
+
+
+def main(fname, multiplier, fout):
+    data = load_file(fname)
+    modified_data = ''''''
+    data = split_data(data)
+    # print(data)
+    for item in data:
+        if re.match(point_pattern, item):
+            modified_data += modify_point(item, multiplier)
+            # print('modified point:', modify_point(item, multiplier))
+        else:
+            # print(item)
+            modified_data += item
+    with open(fout, 'w') as output:
+        output.write(''.join(modified_data))
 
 
 if __name__ == '__main__':
     fname = sys.argv[1]
-    data = load_file(fname)
-    data = split_data(data)
-    for item in data:
-        if re.match(point_pattern, item):
-            pass
+    multiplier = float(sys.argv[2])
+    fout = sys.argv[3]
+

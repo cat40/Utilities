@@ -1,9 +1,12 @@
+import os
 import re
 import sys
 import math
 
 # some constants
 point_pattern = re.compile(r'(\(xy -?\d+\.?\d* -?\d+\.?\d*\))')
+# User inputs:
+HORIZONTAL_DISTANCE = 57.4  # In millimeters. Horizontal size of the logo as exported. Only used for estimate of logo size in the file names
 
 '''
 (xy ###.## ###.##)
@@ -69,7 +72,17 @@ def main(fname, multiplier, fout):
 
 
 if __name__ == '__main__':
-    fname = sys.argv[1]
-    multiplier = float(sys.argv[2])
-    fout = sys.argv[3]
+    path_to_logo = 'C:\\Users\\beuchet\\OneDrive - Rose-Hulman Institute of Technology\\Documents\\MATE\\goat_silkscreen_thick\\'
+    maxmul = 64
+    muldiv = maxmul/2
+    # go from 1/muldiv to 2/1 scale
+    for mul in range(1, maxmul):
+        mul /= muldiv
+        size = HORIZONTAL_DISTANCE * mul
+        fin = os.path.join(path_to_logo, 'goat_silkscreen_original.kicad_mod')
+        fout = os.path.join(path_to_logo, f'goat_silkscreen_{size:.3f}mm.kicad_mod')
+        main(fin, mul, fout)
+    # fname = sys.argv[1]
+    # multiplier = float(sys.argv[2])
+    # fout = sys.argv[3]
 
